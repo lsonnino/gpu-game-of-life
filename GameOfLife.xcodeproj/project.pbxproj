@@ -12,6 +12,11 @@
 		ED55F6592BE6A823000FB1E0 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED55F6582BE6A823000FB1E0 /* Item.swift */; };
 		ED55F65B2BE6A824000FB1E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED55F65A2BE6A824000FB1E0 /* Assets.xcassets */; };
 		ED55F65E2BE6A824000FB1E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED55F65D2BE6A824000FB1E0 /* Preview Assets.xcassets */; };
+		ED55F6662BE6A942000FB1E0 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED55F6652BE6A942000FB1E0 /* GameView.swift */; };
+		ED55F6682BE6AAB8000FB1E0 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED55F6672BE6AAB8000FB1E0 /* Game.swift */; };
+		ED55F66A2BE7820D000FB1E0 /* CommonViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED55F6692BE7820D000FB1E0 /* CommonViews.swift */; };
+		ED55F66C2BE7962F000FB1E0 /* GameHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED55F66B2BE7962F000FB1E0 /* GameHandler.swift */; };
+		ED55F66E2BE7A425000FB1E0 /* Compute.metal in Sources */ = {isa = PBXBuildFile; fileRef = ED55F66D2BE7A425000FB1E0 /* Compute.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +27,12 @@
 		ED55F65A2BE6A824000FB1E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED55F65D2BE6A824000FB1E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		ED55F65F2BE6A824000FB1E0 /* GameOfLife.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GameOfLife.entitlements; sourceTree = "<group>"; };
+		ED55F6652BE6A942000FB1E0 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		ED55F6672BE6AAB8000FB1E0 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		ED55F6692BE7820D000FB1E0 /* CommonViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonViews.swift; sourceTree = "<group>"; };
+		ED55F66B2BE7962F000FB1E0 /* GameHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameHandler.swift; sourceTree = "<group>"; };
+		ED55F66D2BE7A425000FB1E0 /* Compute.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Compute.metal; sourceTree = "<group>"; };
+		ED55F6702BE7A5EC000FB1E0 /* definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = definitions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +67,12 @@
 			children = (
 				ED55F6542BE6A823000FB1E0 /* GameOfLifeApp.swift */,
 				ED55F6562BE6A823000FB1E0 /* ContentView.swift */,
+				ED55F6652BE6A942000FB1E0 /* GameView.swift */,
+				ED55F6692BE7820D000FB1E0 /* CommonViews.swift */,
+				ED55F6672BE6AAB8000FB1E0 /* Game.swift */,
+				ED55F66B2BE7962F000FB1E0 /* GameHandler.swift */,
+				ED55F66D2BE7A425000FB1E0 /* Compute.metal */,
+				ED55F6702BE7A5EC000FB1E0 /* definitions.h */,
 				ED55F6582BE6A823000FB1E0 /* Item.swift */,
 				ED55F65A2BE6A824000FB1E0 /* Assets.xcassets */,
 				ED55F65F2BE6A824000FB1E0 /* GameOfLife.entitlements */,
@@ -143,7 +160,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED55F6572BE6A823000FB1E0 /* ContentView.swift in Sources */,
+				ED55F66A2BE7820D000FB1E0 /* CommonViews.swift in Sources */,
+				ED55F6682BE6AAB8000FB1E0 /* Game.swift in Sources */,
+				ED55F66E2BE7A425000FB1E0 /* Compute.metal in Sources */,
+				ED55F66C2BE7962F000FB1E0 /* GameHandler.swift in Sources */,
 				ED55F6592BE6A823000FB1E0 /* Item.swift in Sources */,
+				ED55F6662BE6A942000FB1E0 /* GameView.swift in Sources */,
 				ED55F6552BE6A823000FB1E0 /* GameOfLifeApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,6 +315,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.alfcorp.GameOfLife;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = GameOfLife/definitions.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -321,6 +344,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.alfcorp.GameOfLife;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = GameOfLife/definitions.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

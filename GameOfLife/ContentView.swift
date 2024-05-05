@@ -8,48 +8,92 @@
 import SwiftUI
 import SwiftData
 
+private let size: Int = 16
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @StateObject var gameHandler: GameHandler = GameHandler(size: size, borders: false)
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
+        HStack(spacing: 0) {
+            ParametersView(gameHandler: gameHandler, width: 200, isBorderOn: gameHandler.game.border)
+            
+            Divider()
+            
+            Spacer()
+            
+            GameView(game: gameHandler.game)
+                .padding(20)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color("background"))
+        .ignoresSafeArea()
+        .onAppear {
+            gameHandler.setup()
         }
     }
+}
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+struct ParametersView: View {
+    @ObservedObject var gameHandler: GameHandler
+    let width: CGFloat
+    
+    @State var isBorderOn: Bool
+    
+    var body: some View {
+        VStack {
+            
+            Spacer()
+            
+            Text("Game of Life")
+                .font(.title)
+                .bold()
+                .foregroundStyle(.text)
+            
+            Text("by Lorenzo")
+                .foregroundStyle(.text)
+            
+            Spacer()
+            
+            Toggle(isOn: $isBorderOn) {
+                Text(isBorderOn ? "Borders on : " : "Borders off : ")
+                    .foregroundStyle(.text)
+            }
+            .toggleStyle(.switch)
+            .onChange(of: isBorderOn, {
+                gameHandler.game.setBorder(value: isBorderOn)
+                print("Borders changed to \(isBorderOn)")
+            })
+            
+            HStack (spacing: 0) {
+                Button(action: {
+                    gameHandler.game.reset()
+                    print("Game reset")
+                }) {
+                    Text("Reset")
+                        .frame(width: width / 2, height: 50)
+                }
+                .buttonStyle(MainButtonStyle(isToggleButton: false, toggled: .constant(false)))
+                
+                Toggle(isOn: $gameHandler.play) {
+                    Text(gameHandler.play ? "Stop" : "Play")
+                        .frame(width: width / 2, height: 50)
+                }
+                .toggleStyle(.button)
+                .buttonStyle(MainButtonStyle(isToggleButton: true, toggled: $gameHandler.play))
+                .onChange(of: gameHandler.play, {
+                    if (gameHandler.play) {
+                        print("Game resumed")
+                    }
+                    else {
+                        print("Game stopped")
+                    }
+                })
             }
         }
+        .frame(width: width)
     }
 }
 

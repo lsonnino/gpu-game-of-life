@@ -26,7 +26,9 @@ struct GameOfLifeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .navigationTitle("Game of Life")
         }
+        .windowStyle(.hiddenTitleBar)
         .modelContainer(sharedModelContainer)
     }
 }
