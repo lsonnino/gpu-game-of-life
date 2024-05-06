@@ -134,8 +134,6 @@ class GameHandler: ObservableObject {
         // Retrieve result
         let result = resultBuffer?.contents().bindMemory(to: Int.self, capacity: MemoryLayout<Int>.size * linearSize)
         let resultArray = pointerToArray(pointer: result!, length: linearSize)
-        print(MemoryLayout<Int>.size)
-        // print(resultArray)
         
         game.state = resultArray.unflatten(dim: game.size)
     }
