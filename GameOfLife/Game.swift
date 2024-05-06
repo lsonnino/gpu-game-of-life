@@ -12,48 +12,53 @@ import simd
 class Game: ObservableObject {
     let size: Int
     @Published var border: Bool
-    @Published var state: [[Bool]]
+    @Published var state: [[Int]]
+    @Published var useSuper: Bool
     
-    init(_ size: Int, border: Bool = true) {
+    init(_ size: Int, border: Bool = true, useSuper: Bool = false) {
         self.size = size
         self.border = border
         self.state = Game.getEmptyArray(size)
+        self.useSuper = useSuper
     }
     
     func reset() {
         self.state = Game.getEmptyArray(size)
     }
     
-    func isInBound(x: Int, y: Int) -> Bool {
+    func isInBounds(x: Int, y: Int) -> Bool {
         return ((0 <= x) && (x < size) && (0 <= y) && (y < size))
     }
     
-    func get(x: Int, y: Int) -> Bool {
-        if (isInBound(x: x, y: y)) {
+    func get(x: Int, y: Int) -> Int {
+        if (isInBounds(x: x, y: y)) {
             return state[y][x]
         }
         else {
-            return border
+            return border ? 1 : 0
         }
     }
     
-    func set(x: Int, y: Int, value: Bool) {
-        if (isInBound(x: x, y: y)) {
+    func set(x: Int, y: Int, value: Int) {
+        if (isInBounds(x: x, y: y)) {
             state[y][x] = value
         }
     }
     
     func toggle(x: Int, y: Int) {
         let value = get(x: x, y: y)
-        set(x: x, y: y, value: !value)
+        set(x: x, y: y, value: value > 0 ? 0 : 1)
     }
     
     func setBorder(value: Bool) {
         self.border = value
     }
+    func setSuper(value: Bool) {
+        self.useSuper = value
+    }
     
-    static func getEmptyArray(_ size: Int) -> [[Bool]] {
-        return Array(repeating: false, count: size * size).unflatten(dim: size)
+    static func getEmptyArray(_ size: Int) -> [[Int]] {
+        return Array(repeating: 0, count: size * size).unflatten(dim: size)
     }
 }
 
@@ -79,14 +84,14 @@ func getMockGame(border: Bool = false) -> Game {
     let size = 8
     let game = Game(size, border: border)
     
-    game.set(x: 1, y: 1, value: true)
-    game.set(x: 2, y: 1, value: true)
-    game.set(x: 2, y: 2, value: true)
+    game.set(x: 1, y: 1, value: 1)
+    game.set(x: 2, y: 1, value: 1)
+    game.set(x: 2, y: 2, value: 1)
     
-    game.set(x: 3, y: 5, value: true)
-    game.set(x: 4, y: 5, value: true)
-    game.set(x: 5, y: 5, value: true)
-    game.set(x: 6, y: 5, value: true)
+    game.set(x: 3, y: 5, value: 1)
+    game.set(x: 4, y: 5, value: 1)
+    game.set(x: 5, y: 5, value: 1)
+    game.set(x: 6, y: 5, value: 1)
     
     return game
 }

@@ -15,25 +15,25 @@ bool is_in_borders(int x, int y, unsigned int size) {
             (y >= 0) && (((unsigned) y) < size));
 }
 
-bool get_value(const device bool *array, int x, int y, unsigned int size, bool borders) {
+int64_t get_value(const device int64_t *array, int x, int y, unsigned int size, bool borders) {
     if (is_in_borders(x, y, size)) {
-        return array[y * size + x];
+        return array[y * size + x] > 0 ? 1 : 0;
     }
     else {
-        return borders;
+        return borders ? 1 : 0;
     }
 }
 
-kernel void game_of_life(const device bool *previous [[buffer(0)]],
+kernel void game_of_life(const device int64_t *previous [[buffer(0)]],
                          constant params_t &params [[buffer(1)]],
-                         device bool *next [[buffer(2)]],
+                         device int64_t *next [[buffer(2)]],
                          uint index [[thread_position_in_grid]]) {
     
-    bool cell = previous[index];
+    int64_t cell = previous[index];
     int x = index % params.size;
     int y = index / params.size;
     
-    bool next_cell = false;
+    int64_t next_cell = 0;
     
     int neighbours = (// Orthogonal neighbours
                       get_value(previous, x-1, y, params.size, params.borders) +
@@ -46,11 +46,21 @@ kernel void game_of_life(const device bool *previous [[buffer(0)]],
                       get_value(previous, x-1, y+1, params.size, params.borders) +
                       get_value(previous, x+1, y+1, params.size, params.borders));
     
-    if (cell) {
-        next_cell = (neighbours == 2) || (neighbours == 3);
+    if (params.use_super) {
+        switch (cell) {
+            case 0: next_cell = (neighbours == 3) ? 1 : 0; break;
+            case 1: next_cell = ((neighbours == 2) || (neighbours == 3)) ? 2 : 0; break;
+            case 2: next_cell = ((neighbours == 2) || (neighbours == 3)) ? 2 : 1; break;
+            default: next_cell = cell; // Should never happen
+        }
     }
     else {
-        next_cell = (neighbours == 3);
+        if (cell == 0) {
+            next_cell = (neighbours == 3) ? 1 : 0;
+        }
+        else {
+            next_cell = ((neighbours == 2) || (neighbours == 3)) ? 1 : 0;
+        }
     }
     
     next[index] = next_cell;

@@ -11,6 +11,7 @@
 struct params_t {
     unsigned int size;
     unsigned int borders;
+    unsigned int use_super;
 };
 
 #endif /* definitions_h */

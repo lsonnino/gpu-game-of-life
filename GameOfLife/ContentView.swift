@@ -16,7 +16,7 @@ struct ContentView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            ParametersView(gameHandler: gameHandler, width: 200, isBorderOn: gameHandler.game.border)
+            ParametersView(gameHandler: gameHandler, width: 200, isBorderOn: gameHandler.game.border, allowSuper: gameHandler.game.useSuper)
             
             Divider()
             
@@ -41,6 +41,7 @@ struct ParametersView: View {
     let width: CGFloat
     
     @State var isBorderOn: Bool
+    @State var allowSuper: Bool
     
     var body: some View {
         VStack {
@@ -65,6 +66,16 @@ struct ParametersView: View {
             .onChange(of: isBorderOn, {
                 gameHandler.game.setBorder(value: isBorderOn)
                 print("Borders changed to \(isBorderOn)")
+            })
+            
+            Toggle(isOn: $allowSuper) {
+                Text(allowSuper ? "Super on : " : "Super off : ")
+                    .foregroundStyle(.text)
+            }
+            .toggleStyle(.switch)
+            .onChange(of: allowSuper, {
+                gameHandler.game.setSuper(value: allowSuper)
+                print("Super changed to \(allowSuper)")
             })
             
             HStack (spacing: 0) {

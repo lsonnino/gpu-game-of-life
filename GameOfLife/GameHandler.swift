@@ -8,8 +8,8 @@
 import MetalKit
 import simd
 
-func pointerToArray(pointer: UnsafeMutablePointer<Bool>, length: Int) -> [Bool] {
-    var array = Array(repeating: false, count: length)
+func pointerToArray(pointer: UnsafeMutablePointer<Int>, length: Int) -> [Int] {
+    var array = Array(repeating: 0, count: length)
     var usePointer = pointer;
     
     for i in 0..<length {
@@ -32,6 +32,8 @@ class GameHandler: ObservableObject {
     let maxThreadsPerThreadGroup: Int
     
     var timer: Timer? = nil
+    
+    private var linearSize: Int
     
     init(size: Int, borders: Bool = false) {
         self.game = Game(size, border: borders)
@@ -64,6 +66,8 @@ class GameHandler: ObservableObject {
         
         // Get the maximum number of threads each group can compute on
         self.maxThreadsPerThreadGroup = pipelineState.maxTotalThreadsPerThreadgroup
+        
+        self.linearSize = size * size
     }
     
     func setup() {
@@ -77,14 +81,14 @@ class GameHandler: ObservableObject {
     
     func setSize(_ size: Int) {
         self.game = Game(size, border: game.border)
+        self.linearSize = game.size * game.size
     }
     
     func update() {
-        let linearSize = game.size * game.size
-        
         var params = params_t()
         params.size = UInt32(game.size)
         params.borders = game.border ? 1 : 0
+        params.use_super = game.useSuper ? 1 : 0
         
         // Create buffer to send commands to the queue
         guard let commandBuffer = commandQueue.makeCommandBuffer() else {
@@ -99,12 +103,12 @@ class GameHandler: ObservableObject {
         // Pass data to the GPU
         let flattenedState = Array(game.state.joined())
         let stateBuffer = device.makeBuffer(bytes: flattenedState,
-                                            length: linearSize * MemoryLayout<Bool>.stride,
+                                            length: linearSize * MemoryLayout<Int>.size,
                                             options: .storageModeShared)
         let paramsBuffer = device.makeBuffer(bytes: &params,
                                              length: MemoryLayout<params_t>.stride,
                                              options: [])
-        let resultBuffer = device.makeBuffer(length: linearSize * MemoryLayout<Bool>.stride,
+        let resultBuffer = device.makeBuffer(length: linearSize * MemoryLayout<Int>.size,
                                              options: .storageModeShared)
         
         
@@ -128,8 +132,10 @@ class GameHandler: ObservableObject {
         commandBuffer.waitUntilCompleted()
         
         // Retrieve result
-        let result = resultBuffer?.contents().bindMemory(to: Bool.self, capacity: MemoryLayout<Float>.size * linearSize)
+        let result = resultBuffer?.contents().bindMemory(to: Int.self, capacity: MemoryLayout<Int>.size * linearSize)
         let resultArray = pointerToArray(pointer: result!, length: linearSize)
+        print(MemoryLayout<Int>.size)
+        // print(resultArray)
         
         game.state = resultArray.unflatten(dim: game.size)
     }

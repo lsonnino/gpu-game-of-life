@@ -44,13 +44,24 @@ struct ElementView: View {
     
     var body: some View {
         Rectangle()
-            .fill(game.get(x: x, y: y) ? Color("on") : Color("off"))
+            .fill(getColor(value: game.get(x: x, y: y)))
             .border(Color.black, width: 0.3)
             .aspectRatio(1, contentMode: .fit)
             .onTapGesture {
                 game.toggle(x: x, y: y)
-                print("Hello")
             }
+    }
+    
+    func getColor(value: Int) -> Color {
+        if value == 1 {
+            return Color.on
+        }
+        else if value == 2 {
+            return Color("super")
+        }
+        else {
+            return Color.off
+        }
     }
 }
 
